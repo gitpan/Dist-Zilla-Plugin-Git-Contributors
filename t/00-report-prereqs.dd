@@ -7,7 +7,7 @@ do { my $x = {
                       },
        'develop' => {
                       'recommends' => {
-                                        'Dist::Zilla::PluginBundle::Author::ETHER' => '0.067'
+                                        'Dist::Zilla::PluginBundle::Author::ETHER' => '0.068'
                                       },
                       'requires' => {
                                       'Dist::Zilla' => '5',
@@ -52,8 +52,11 @@ do { my $x = {
                       'requires' => {
                                       'Dist::Zilla::Plugin::MetaResources' => '4.300039',
                                       'Dist::Zilla::Role::MetaProvider' => '0',
+                                      'Git::Wrapper' => '0',
                                       'List::Util' => '1.33',
                                       'Moose' => '0',
+                                      'Safe::Isa' => '0',
+                                      'Try::Tiny' => '0',
                                       'namespace::autoclean' => '0',
                                       'perl' => '5.008',
                                       'strict' => '0',
@@ -65,18 +68,19 @@ do { my $x = {
                                      'CPAN::Meta' => '2.120900'
                                    },
                    'requires' => {
+                                   'Exporter' => '0',
                                    'ExtUtils::MakeMaker' => '0',
                                    'File::Spec' => '0',
-                                   'Git::Wrapper' => '0',
-                                   'List::Util' => '1.33',
                                    'Path::Tiny' => '0',
-                                   'Scalar::Util' => '0',
                                    'Sort::Versions' => '0',
                                    'Test::DZil' => '0',
                                    'Test::Deep' => '0',
                                    'Test::Fatal' => '0',
                                    'Test::More' => '0',
+                                   'Test::Requires' => '0',
                                    'if' => '0',
+                                   'lib' => '0',
+                                   'parent' => '0',
                                    'utf8' => '0'
                                  }
                  }

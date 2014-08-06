@@ -8,8 +8,9 @@ use Test::DZil;
 use Test::Fatal;
 use Test::Deep;
 use Path::Tiny;
-use Git::Wrapper;
-use Sort::Versions;
+
+use lib 't/lib';
+use GitSetup;
 
 my $tzil = Builder->from_config(
     { dist_root => 't/does-not-exist' },
@@ -28,6 +29,7 @@ my $tzil = Builder->from_config(
                     copyright_holder => 'E. Xavier Ample',
                 },
                 [ GatherDir => ],
+                [ MetaConfig => ],
                 [ 'Git::Contributors' => { include_authors => 1 } ],
             ),
             path(qw(source lib Foo.pm)) => "package Foo;\n1;\n",
@@ -36,14 +38,7 @@ my $tzil = Builder->from_config(
 );
 
 my $root = path($tzil->tempdir)->child('source');
-diag 'testing with git repo ', $root;
-
-my $git = Git::Wrapper->new($root);
-my $version = $git->version;
-diag 'Testing with git version: ', $version;
-plan skip_all => "Need git v1.5.0 for 'config' subcommand" if versioncmp($git->version, '1.5.0') < 0;
-
-$git->init;
+my $git = git_wrapper($root);
 
 my $changes = $root->child('Changes');
 $changes->spew("Release history for my dist\n\n");
@@ -74,6 +69,20 @@ cmp_deeply(
             '김도형 - Keedi Kim <keedi@example.org>',
             'Dagfinn Ilmari Mannsåker <ilmari@example.org>',
         ),
+        x_Dist_Zilla => superhashof({
+            plugins => supersetof(
+                {
+                    class => 'Dist::Zilla::Plugin::Git::Contributors',
+                    config => {
+                        'Dist::Zilla::Plugin::Git::Contributors' => {
+                            include_authors => 1,
+                        },
+                    },
+                    name => 'Git::Contributors',
+                    version => ignore,
+                },
+            ),
+        }),
     }),
     'contributor names are extracted, with authors not stripped',
 );

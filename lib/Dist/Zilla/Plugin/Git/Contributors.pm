@@ -4,8 +4,8 @@ package Dist::Zilla::Plugin::Git::Contributors;
 BEGIN {
   $Dist::Zilla::Plugin::Git::Contributors::AUTHORITY = 'cpan:ETHER';
 }
-# git description: b633a10
-$Dist::Zilla::Plugin::Git::Contributors::VERSION = '0.001';
+# git description: v0.001-9-gab96f0e
+$Dist::Zilla::Plugin::Git::Contributors::VERSION = '0.002';
 # ABSTRACT: Add contributor names from git to your distribution
 # KEYWORDS: plugin distribution metadata git contributors authors commits
 # vim: set ts=8 sw=4 tw=78 et :
@@ -14,6 +14,9 @@ use Moose;
 with 'Dist::Zilla::Role::MetaProvider';
 
 use List::Util 1.33 'none';
+use Git::Wrapper;
+use Try::Tiny;
+use Safe::Isa;
 use namespace::autoclean;
 
 has include_authors => (
@@ -21,11 +24,27 @@ has include_authors => (
     default => 0,
 );
 
+around dump_config => sub
+{
+    my ($orig, $self) = @_;
+    my $config = $self->$orig;
+
+    $config->{+__PACKAGE__} = {
+        include_authors => $self->include_authors,
+    };
+
+    return $config;
+};
+
 sub metadata
 {
     my $self = shift;
 
-    +{ x_contributors => $self->_contributors }
+    my $contributors = $self->_contributors;
+    return if not @$contributors;
+
+    $self->_check_podweaver;
+    +{ x_contributors => $contributors };
 }
 
 sub _contributors
@@ -33,7 +52,21 @@ sub _contributors
     my $self = shift;
 
     my $git = Git::Wrapper->new('.');
+
+    # figure out if we're in a git repo or not
+    my $in_repo;
+    try {
+        $in_repo = $git->RUN('status');
+        my $err = $git->ERR; $self->log(@$err) if @$err;
+    }
+    catch {
+        $self->log($_->error) if $_->$_isa('Git::Wrapper::Exception');
+    };
+
+    return [] if not $in_repo;
+
     my @data = $git->shortlog('HEAD', { email => 1, summary => 1});
+    my $err = $git->ERR; $self->log(@$err) if @$err;
 
     my @contributors = map { utf8::decode($_); m/^\s*\d+\s*(.*)$/g; } @data;
 
@@ -47,6 +80,16 @@ sub _contributors
     }
 
     return \@contributors;
+}
+
+sub _check_podweaver
+{
+    my $self = shift;
+
+    # check if the module is loaded, not just that it is installed
+    $self->log('WARNING! You appear to be using Pod::Weaver::Section::Contributors, but it is not new enough to take data directly from distmeta. Upgrade to version 0.008!')
+        if eval { Pod::Weaver::Section::Contributors->VERSION(0); 1 }
+            and not eval { Pod::Weaver::Section::Contributors->VERSION(0.007001); 1 };
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -63,7 +106,7 @@ Dist::Zilla::Plugin::Git::Contributors - Add contributor names from git to your 
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 SYNOPSIS
 

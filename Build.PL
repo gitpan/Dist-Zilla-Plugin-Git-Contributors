@@ -64,7 +64,7 @@ EOW
         "Karen Etheridge <ether\@cpan.org>"
       ],
       "dist_name" => "Dist-Zilla-Plugin-Git-Contributors",
-      "dist_version" => "0.001",
+      "dist_version" => "0.002",
       "license" => "perl",
       "module_name" => "Dist::Zilla::Plugin::Git::Contributors",
       "recommends" => {},
@@ -72,8 +72,11 @@ EOW
       "requires" => {
         "Dist::Zilla::Plugin::MetaResources" => "4.300039",
         "Dist::Zilla::Role::MetaProvider" => 0,
+        "Git::Wrapper" => 0,
         "List::Util" => "1.33",
         "Moose" => 0,
+        "Safe::Isa" => 0,
+        "Try::Tiny" => 0,
         "namespace::autoclean" => 0,
         "perl" => "5.008",
         "strict" => 0,
@@ -81,36 +84,38 @@ EOW
       },
       "script_files" => [],
       "test_requires" => {
+        "Exporter" => 0,
         "ExtUtils::MakeMaker" => 0,
         "File::Spec" => 0,
-        "Git::Wrapper" => 0,
-        "List::Util" => "1.33",
         "Path::Tiny" => 0,
-        "Scalar::Util" => 0,
         "Sort::Versions" => 0,
         "Test::DZil" => 0,
         "Test::Deep" => 0,
         "Test::Fatal" => 0,
         "Test::More" => 0,
+        "Test::Requires" => 0,
         "if" => 0,
+        "lib" => 0,
+        "parent" => 0,
         "utf8" => 0
       }
     );
 
 
     my %fallback_build_requires = (
+      "Exporter" => 0,
       "ExtUtils::MakeMaker" => 0,
       "File::Spec" => 0,
-      "Git::Wrapper" => 0,
-      "List::Util" => "1.33",
       "Path::Tiny" => 0,
-      "Scalar::Util" => 0,
       "Sort::Versions" => 0,
       "Test::DZil" => 0,
       "Test::Deep" => 0,
       "Test::Fatal" => 0,
       "Test::More" => 0,
+      "Test::Requires" => 0,
       "if" => 0,
+      "lib" => 0,
+      "parent" => 0,
       "utf8" => 0
     );
 

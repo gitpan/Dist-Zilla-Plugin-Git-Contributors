@@ -3,18 +3,19 @@ abstract: 'Add contributor names from git to your distribution'
 author:
   - 'Karen Etheridge <ether@cpan.org>'
 build_requires:
+  Exporter: '0'
   ExtUtils::MakeMaker: '0'
   File::Spec: '0'
-  Git::Wrapper: '0'
-  List::Util: '1.33'
   Path::Tiny: '0'
-  Scalar::Util: '0'
   Sort::Versions: '0'
   Test::DZil: '0'
   Test::Deep: '0'
   Test::Fatal: '0'
   Test::More: '0'
+  Test::Requires: '0'
   if: '0'
+  lib: '0'
+  parent: '0'
   utf8: '0'
 configure_requires:
   ExtUtils::MakeMaker: '0'
@@ -41,12 +42,15 @@ no_index:
 provides:
   Dist::Zilla::Plugin::Git::Contributors:
     file: lib/Dist/Zilla/Plugin/Git/Contributors.pm
-    version: '0.001'
+    version: '0.002'
 requires:
   Dist::Zilla::Plugin::MetaResources: '4.300039'
   Dist::Zilla::Role::MetaProvider: '0'
+  Git::Wrapper: '0'
   List::Util: '1.33'
   Moose: '0'
+  Safe::Isa: '0'
+  Try::Tiny: '0'
   namespace::autoclean: '0'
   perl: '5.008'
   strict: '0'
@@ -57,7 +61,7 @@ resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=Dist-Zilla-Plugin-Git-Contributors
   homepage: https://github.com/karenetheridge/Dist-Zilla-Plugin-Git-Contributors
   repository: https://github.com/karenetheridge/Dist-Zilla-Plugin-Git-Contributors.git
-version: '0.001'
+version: '0.002'
 x_Dist_Zilla:
   perl:
     version: '5.021001'
@@ -71,9 +75,12 @@ x_Dist_Zilla:
           try_built: ~
           try_built_method: mtime
       name: Bootstrap::lib
-      version: '1.000003'
+      version: '1.000004'
     -
       class: Dist::Zilla::Plugin::Git::Contributors
+      config:
+        Dist::Zilla::Plugin::Git::Contributors:
+          include_authors: '0'
       name: Git::Contributors
       version: ~
     -
@@ -177,7 +184,7 @@ x_Dist_Zilla:
             - ':ExecFiles'
             - '@Author::ETHER/Examples'
       name: '@Author::ETHER/Test::Compile'
-      version: '2.043'
+      version: '2.044'
     -
       class: Dist::Zilla::Plugin::Test::NoTabs
       config:
@@ -237,7 +244,7 @@ x_Dist_Zilla:
     -
       class: Dist::Zilla::Plugin::Test::ReportPrereqs
       name: '@Author::ETHER/Test::ReportPrereqs'
-      version: '0.017'
+      version: '0.018'
     -
       class: Dist::Zilla::Plugin::Test::Portability
       name: '@Author::ETHER/Test::Portability'
@@ -339,7 +346,7 @@ x_Dist_Zilla:
     -
       class: Dist::Zilla::Plugin::ReadmeAnyFromPod
       name: '@Author::ETHER/ReadmeAnyFromPod'
-      version: '0.141760'
+      version: '0.142180'
     -
       class: Dist::Zilla::Plugin::GithubMeta
       name: '@Author::ETHER/GithubMeta'
@@ -377,6 +384,13 @@ x_Dist_Zilla:
       class: Dist::Zilla::Plugin::Keywords
       name: '@Author::ETHER/Keywords'
       version: '0.005'
+    -
+      class: Dist::Zilla::Plugin::Git::Contributors
+      config:
+        Dist::Zilla::Plugin::Git::Contributors:
+          include_authors: '0'
+      name: '@Author::ETHER/Git::Contributors'
+      version: ~
     -
       class: Dist::Zilla::Plugin::AutoPrereqs
       name: '@Author::ETHER/AutoPrereqs'
@@ -504,7 +518,7 @@ x_Dist_Zilla:
       version: '0.001'
     -
       class: Dist::Zilla::Plugin::Run::AfterRelease
-      name: '@Author::ETHER/Run::AfterRelease'
+      name: '@Author::ETHER/remove old READMEs'
       version: '0.022'
     -
       class: Dist::Zilla::Plugin::Git::Commit
@@ -533,7 +547,7 @@ x_Dist_Zilla:
         Dist::Zilla::Plugin::Git::Tag:
           branch: ~
           signed: 0
-          tag: v0.001
+          tag: v0.002
           tag_format: v%v%t
           tag_message: v%v%t
           time_zone: local
@@ -557,9 +571,9 @@ x_Dist_Zilla:
       name: '@Author::ETHER/Git::Push'
       version: '2.023'
     -
-      class: Dist::Zilla::Plugin::InstallRelease
-      name: '@Author::ETHER/InstallRelease'
-      version: '0.008'
+      class: Dist::Zilla::Plugin::Run::AfterRelease
+      name: '@Author::ETHER/install release'
+      version: '0.022'
     -
       class: Dist::Zilla::Plugin::ConfirmRelease
       name: '@Author::ETHER/ConfirmRelease'
@@ -638,5 +652,3 @@ x_Dist_Zilla:
       is_trial: '0'
     version: '5.020'
 x_authority: cpan:ETHER
-x_contributors:
-  - 'Test <test@example.com>'

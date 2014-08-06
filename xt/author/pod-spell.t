@@ -13,8 +13,6 @@ __DATA__
 Karen
 Etheridge
 ether
-Test
-test
 lib
 Dist
 Zilla

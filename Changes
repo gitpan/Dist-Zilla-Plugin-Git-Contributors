@@ -1,4 +1,13 @@
 Revision history for Dist-Zilla-Plugin-Git-Contributors
 
+0.002     2014-08-06 05:21:51Z
+          - do not add an empty x_contributors key if there are no
+            (non-author) contributors to report
+          - fix test failures when run on a system where git has not been
+            configured
+          - warn at runtime if Pod::Weaver::Section::Contributors is too old
+            to pull data from distmeta on its own
+          - do not blow up if run in a directory that is not tracked by git
+
 0.001     2014-07-31 01:42:08Z
           - Initial release.

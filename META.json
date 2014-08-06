@@ -37,7 +37,7 @@
       },
       "develop" : {
          "recommends" : {
-            "Dist::Zilla::PluginBundle::Author::ETHER" : "0.067"
+            "Dist::Zilla::PluginBundle::Author::ETHER" : "0.068"
          },
          "requires" : {
             "Dist::Zilla" : "5",
@@ -82,8 +82,11 @@
          "requires" : {
             "Dist::Zilla::Plugin::MetaResources" : "4.300039",
             "Dist::Zilla::Role::MetaProvider" : "0",
+            "Git::Wrapper" : "0",
             "List::Util" : "1.33",
             "Moose" : "0",
+            "Safe::Isa" : "0",
+            "Try::Tiny" : "0",
             "namespace::autoclean" : "0",
             "perl" : "5.008",
             "strict" : "0",
@@ -95,18 +98,19 @@
             "CPAN::Meta" : "2.120900"
          },
          "requires" : {
+            "Exporter" : "0",
             "ExtUtils::MakeMaker" : "0",
             "File::Spec" : "0",
-            "Git::Wrapper" : "0",
-            "List::Util" : "1.33",
             "Path::Tiny" : "0",
-            "Scalar::Util" : "0",
             "Sort::Versions" : "0",
             "Test::DZil" : "0",
             "Test::Deep" : "0",
             "Test::Fatal" : "0",
             "Test::More" : "0",
+            "Test::Requires" : "0",
             "if" : "0",
+            "lib" : "0",
+            "parent" : "0",
             "utf8" : "0"
          }
       }
@@ -114,7 +118,7 @@
    "provides" : {
       "Dist::Zilla::Plugin::Git::Contributors" : {
          "file" : "lib/Dist/Zilla/Plugin/Git/Contributors.pm",
-         "version" : "0.001"
+         "version" : "0.002"
       }
    },
    "release_status" : "stable",
@@ -132,7 +136,7 @@
       "x_IRC" : "irc://irc.perl.org/#distzilla",
       "x_MailingList" : "http://dzil.org/#mailing-list"
    },
-   "version" : "0.001",
+   "version" : "0.002",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.021001"
@@ -149,10 +153,15 @@
                }
             },
             "name" : "Bootstrap::lib",
-            "version" : "1.000003"
+            "version" : "1.000004"
          },
          {
             "class" : "Dist::Zilla::Plugin::Git::Contributors",
+            "config" : {
+               "Dist::Zilla::Plugin::Git::Contributors" : {
+                  "include_authors" : "0"
+               }
+            },
             "name" : "Git::Contributors",
             "version" : null
          },
@@ -288,7 +297,7 @@
                }
             },
             "name" : "@Author::ETHER/Test::Compile",
-            "version" : "2.043"
+            "version" : "2.044"
          },
          {
             "class" : "Dist::Zilla::Plugin::Test::NoTabs",
@@ -364,7 +373,7 @@
          {
             "class" : "Dist::Zilla::Plugin::Test::ReportPrereqs",
             "name" : "@Author::ETHER/Test::ReportPrereqs",
-            "version" : "0.017"
+            "version" : "0.018"
          },
          {
             "class" : "Dist::Zilla::Plugin::Test::Portability",
@@ -494,7 +503,7 @@
          {
             "class" : "Dist::Zilla::Plugin::ReadmeAnyFromPod",
             "name" : "@Author::ETHER/ReadmeAnyFromPod",
-            "version" : "0.141760"
+            "version" : "0.142180"
          },
          {
             "class" : "Dist::Zilla::Plugin::GithubMeta",
@@ -544,6 +553,16 @@
             "class" : "Dist::Zilla::Plugin::Keywords",
             "name" : "@Author::ETHER/Keywords",
             "version" : "0.005"
+         },
+         {
+            "class" : "Dist::Zilla::Plugin::Git::Contributors",
+            "config" : {
+               "Dist::Zilla::Plugin::Git::Contributors" : {
+                  "include_authors" : "0"
+               }
+            },
+            "name" : "@Author::ETHER/Git::Contributors",
+            "version" : null
          },
          {
             "class" : "Dist::Zilla::Plugin::AutoPrereqs",
@@ -716,7 +735,7 @@
          },
          {
             "class" : "Dist::Zilla::Plugin::Run::AfterRelease",
-            "name" : "@Author::ETHER/Run::AfterRelease",
+            "name" : "@Author::ETHER/remove old READMEs",
             "version" : "0.022"
          },
          {
@@ -753,7 +772,7 @@
                "Dist::Zilla::Plugin::Git::Tag" : {
                   "branch" : null,
                   "signed" : 0,
-                  "tag" : "v0.001",
+                  "tag" : "v0.002",
                   "tag_format" : "v%v%t",
                   "tag_message" : "v%v%t",
                   "time_zone" : "local"
@@ -787,9 +806,9 @@
             "version" : "2.023"
          },
          {
-            "class" : "Dist::Zilla::Plugin::InstallRelease",
-            "name" : "@Author::ETHER/InstallRelease",
-            "version" : "0.008"
+            "class" : "Dist::Zilla::Plugin::Run::AfterRelease",
+            "name" : "@Author::ETHER/install release",
+            "version" : "0.022"
          },
          {
             "class" : "Dist::Zilla::Plugin::ConfirmRelease",
@@ -893,9 +912,6 @@
          "version" : "5.020"
       }
    },
-   "x_authority" : "cpan:ETHER",
-   "x_contributors" : [
-      "Test <test@example.com>"
-   ]
+   "x_authority" : "cpan:ETHER"
 }
 

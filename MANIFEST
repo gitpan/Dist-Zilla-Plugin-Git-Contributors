@@ -9,13 +9,16 @@ META.json
 META.yml
 Makefile.PL
 README
-README.pod
 dist.ini
 lib/Dist/Zilla/Plugin/Git/Contributors.pm
 t/00-report-prereqs.dd
 t/00-report-prereqs.t
 t/01-basic.t
 t/02-include-authors.t
+t/03-no-contributors.t
+t/04-podweaver-warning.t
+t/05-no-repository.t
+t/lib/GitSetup.pm
 weaver.ini
 xt/author/00-compile.t
 xt/author/pod-spell.t
