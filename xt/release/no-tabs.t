@@ -15,6 +15,8 @@ my @files = (
     't/03-no-contributors.t',
     't/04-podweaver-warning.t',
     't/05-no-repository.t',
+    't/06-include-releaser.t',
+    't/07-author-is-releaser.t',
     't/lib/GitSetup.pm',
     'xt/author/00-compile.t',
     'xt/author/pod-spell.t',

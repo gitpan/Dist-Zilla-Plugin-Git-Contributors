@@ -4,8 +4,8 @@ package Dist::Zilla::Plugin::Git::Contributors;
 BEGIN {
   $Dist::Zilla::Plugin::Git::Contributors::AUTHORITY = 'cpan:ETHER';
 }
-# git description: v0.001-9-gab96f0e
-$Dist::Zilla::Plugin::Git::Contributors::VERSION = '0.002';
+# git description: v0.002-3-gb8f41f1
+$Dist::Zilla::Plugin::Git::Contributors::VERSION = '0.003';
 # ABSTRACT: Add contributor names from git to your distribution
 # KEYWORDS: plugin distribution metadata git contributors authors commits
 # vim: set ts=8 sw=4 tw=78 et :
@@ -17,11 +17,17 @@ use List::Util 1.33 'none';
 use Git::Wrapper;
 use Try::Tiny;
 use Safe::Isa;
+use Path::Tiny;
 use namespace::autoclean;
 
 has include_authors => (
     is => 'ro', isa => 'Bool',
     default => 0,
+);
+
+has include_releaser => (
+    is => 'ro', isa => 'Bool',
+    default => 1,
 );
 
 around dump_config => sub
@@ -31,6 +37,7 @@ around dump_config => sub
 
     $config->{+__PACKAGE__} = {
         include_authors => $self->include_authors,
+        include_releaser  => $self->include_releaser,
     };
 
     return $config;
@@ -47,11 +54,18 @@ sub metadata
     +{ x_contributors => $contributors };
 }
 
+has _git => (
+    is => 'ro',
+    isa => 'Git::Wrapper',
+    lazy => 1,
+    default => sub { Git::Wrapper->new(path('.')->absolute->stringify) },
+);
+
 sub _contributors
 {
     my $self = shift;
 
-    my $git = Git::Wrapper->new('.');
+    my $git = $self->_git;
 
     # figure out if we're in a git repo or not
     my $in_repo;
@@ -79,7 +93,29 @@ sub _contributors
         } @contributors;
     }
 
+    if (not $self->include_releaser)
+    {
+        my $releaser = $self->_releaser;
+        @contributors = grep { $_ ne $releaser } @contributors;
+    }
+
     return \@contributors;
+}
+
+sub _releaser
+{
+    my $self = shift;
+
+    my $git = $self->_git;
+
+    my ($username) = $git->config('user.name');
+    my $err = $git->ERR; $self->log(@$err) if @$err;
+
+    my ($email) = $git->config('user.email');
+    $err = $git->ERR; $self->log(@$err) if @$err;
+
+    return if not $username or not $email;
+    $username . ' <' . $email . '>';
 }
 
 sub _check_podweaver
@@ -106,7 +142,7 @@ Dist::Zilla::Plugin::Git::Contributors - Add contributor names from git to your 
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 SYNOPSIS
 
@@ -128,7 +164,21 @@ distribution metadata.
 =head2 C<include_authors>
 
 By default, distribution authors are removed from the list of extracted git
-contributors. To disable this, set C<include_authors> = 1.
+contributors. To disable this, set C<include_authors = 1>.
+
+=head2 C<include_releaser>
+
+Defaults to true; set to false to remove the current user (who is doing the
+distribution release) from the contributors list. It is applied after
+C<include_authors>, so you will be removed from the list even if you are (one
+of the) distribution author(s) and C<include_authors = 1>.
+
+=for stopwords metacpan
+
+For most distributions, C<< include_authors = 1, include_releaser = 0 >> seems
+to be the right combination of configs to use, particularly for how
+distributions are displayed on L<metacpan|http://metacpan.org>. Perhaps these
+should be the defaults?
 
 =for stopwords canonicalizing
 

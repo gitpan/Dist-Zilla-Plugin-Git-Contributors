@@ -85,6 +85,7 @@
             "Git::Wrapper" : "0",
             "List::Util" : "1.33",
             "Moose" : "0",
+            "Path::Tiny" : "0",
             "Safe::Isa" : "0",
             "Try::Tiny" : "0",
             "namespace::autoclean" : "0",
@@ -101,7 +102,6 @@
             "Exporter" : "0",
             "ExtUtils::MakeMaker" : "0",
             "File::Spec" : "0",
-            "Path::Tiny" : "0",
             "Sort::Versions" : "0",
             "Test::DZil" : "0",
             "Test::Deep" : "0",
@@ -118,7 +118,7 @@
    "provides" : {
       "Dist::Zilla::Plugin::Git::Contributors" : {
          "file" : "lib/Dist/Zilla/Plugin/Git/Contributors.pm",
-         "version" : "0.002"
+         "version" : "0.003"
       }
    },
    "release_status" : "stable",
@@ -136,10 +136,10 @@
       "x_IRC" : "irc://irc.perl.org/#distzilla",
       "x_MailingList" : "http://dzil.org/#mailing-list"
    },
-   "version" : "0.002",
+   "version" : "0.003",
    "x_Dist_Zilla" : {
       "perl" : {
-         "version" : "5.021001"
+         "version" : "5.021002"
       },
       "plugins" : [
          {
@@ -159,7 +159,8 @@
             "class" : "Dist::Zilla::Plugin::Git::Contributors",
             "config" : {
                "Dist::Zilla::Plugin::Git::Contributors" : {
-                  "include_authors" : "0"
+                  "include_authors" : "0",
+                  "include_releaser" : "1"
                }
             },
             "name" : "Git::Contributors",
@@ -558,7 +559,8 @@
             "class" : "Dist::Zilla::Plugin::Git::Contributors",
             "config" : {
                "Dist::Zilla::Plugin::Git::Contributors" : {
-                  "include_authors" : "0"
+                  "include_authors" : "0",
+                  "include_releaser" : "1"
                }
             },
             "name" : "@Author::ETHER/Git::Contributors",
@@ -598,7 +600,7 @@
                }
             },
             "name" : "@Author::ETHER/MakeMaker::Fallback",
-            "version" : "0.010"
+            "version" : "0.011"
          },
          {
             "class" : "Dist::Zilla::Plugin::ModuleBuildTiny::Fallback",
@@ -639,8 +641,15 @@
          },
          {
             "class" : "Dist::Zilla::Plugin::Run::AfterBuild",
+            "config" : {
+               "Dist::Zilla::Plugin::Run::Role::Runner" : {
+                  "run" : [
+                     "bash -c \"if [[ `dirname %d` != .build ]]; then test -e .ackrc && grep -q -- '--ignore-dir=%d' .ackrc || echo '--ignore-dir=%d' >> .ackrc; fi; if [[ %d =~ ^%n-[.[:xdigit:]]+$ ]]; then rm -f .latest; ln -s %d .latest; fi\""
+                  ]
+               }
+            },
             "name" : "@Author::ETHER/Run::AfterBuild",
-            "version" : "0.022"
+            "version" : "0.023"
          },
          {
             "class" : "Dist::Zilla::Plugin::CheckStrictVersion",
@@ -688,7 +697,7 @@
          {
             "class" : "Dist::Zilla::Plugin::Git::Remote::Check",
             "name" : "@Author::ETHER/Git::Remote::Check",
-            "version" : "0.2.0"
+            "version" : "0.1.2"
          },
          {
             "class" : "Dist::Zilla::Plugin::CheckPrereqsIndexed",
@@ -735,8 +744,15 @@
          },
          {
             "class" : "Dist::Zilla::Plugin::Run::AfterRelease",
+            "config" : {
+               "Dist::Zilla::Plugin::Run::Role::Runner" : {
+                  "run" : [
+                     "rm -f README.md"
+                  ]
+               }
+            },
             "name" : "@Author::ETHER/remove old READMEs",
-            "version" : "0.022"
+            "version" : "0.023"
          },
          {
             "class" : "Dist::Zilla::Plugin::Git::Commit",
@@ -772,7 +788,7 @@
                "Dist::Zilla::Plugin::Git::Tag" : {
                   "branch" : null,
                   "signed" : 0,
-                  "tag" : "v0.002",
+                  "tag" : "v0.003",
                   "tag_format" : "v%v%t",
                   "tag_message" : "v%v%t",
                   "time_zone" : "local"
@@ -807,8 +823,13 @@
          },
          {
             "class" : "Dist::Zilla::Plugin::Run::AfterRelease",
+            "config" : {
+               "Dist::Zilla::Plugin::Run::Role::Runner" : {
+                  "run" : "REDACTED"
+               }
+            },
             "name" : "@Author::ETHER/install release",
-            "version" : "0.022"
+            "version" : "0.023"
          },
          {
             "class" : "Dist::Zilla::Plugin::ConfirmRelease",

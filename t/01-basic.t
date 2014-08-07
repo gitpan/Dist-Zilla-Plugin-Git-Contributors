@@ -79,6 +79,7 @@ cmp_deeply(
                     config => {
                         'Dist::Zilla::Plugin::Git::Contributors' => {
                             include_authors => 0,
+                            include_releaser => 1,
                         },
                     },
                     name => 'Git::Contributors',
@@ -88,6 +89,7 @@ cmp_deeply(
         }),
     }),
     'contributor names are extracted, with authors not stripped',
-);
+)
+or diag 'got distmeta: ', explain $tzil->distmeta;
 
 done_testing;
