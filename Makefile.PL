@@ -79,11 +79,13 @@ my %WriteMakefileArgs = (
   "LICENSE" => "perl",
   "NAME" => "Dist::Zilla::Plugin::Git::Contributors",
   "PREREQ_PM" => {
+    "Data::Dumper" => 0,
     "Dist::Zilla::Plugin::MetaResources" => "4.300039",
     "Dist::Zilla::Role::MetaProvider" => 0,
     "Git::Wrapper" => 0,
     "List::Util" => "1.33",
     "Moose" => 0,
+    "Moose::Util::TypeConstraints" => 0,
     "Path::Tiny" => 0,
     "Safe::Isa" => 0,
     "Try::Tiny" => 0,
@@ -106,7 +108,7 @@ my %WriteMakefileArgs = (
     "parent" => 0,
     "utf8" => 0
   },
-  "VERSION" => "0.003",
+  "VERSION" => "0.004",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -114,6 +116,7 @@ my %WriteMakefileArgs = (
 
 
 my %FallbackPrereqs = (
+  "Data::Dumper" => 0,
   "Dist::Zilla::Plugin::MetaResources" => "4.300039",
   "Dist::Zilla::Role::MetaProvider" => 0,
   "Exporter" => 0,
@@ -122,6 +125,7 @@ my %FallbackPrereqs = (
   "Git::Wrapper" => 0,
   "List::Util" => "1.33",
   "Moose" => 0,
+  "Moose::Util::TypeConstraints" => 0,
   "Path::Tiny" => 0,
   "Safe::Isa" => 0,
   "Sort::Versions" => 0,

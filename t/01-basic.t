@@ -68,10 +68,10 @@ is(
 cmp_deeply(
     $tzil->distmeta,
     superhashof({
-        x_contributors => bag(
-            'Foo Bar <foo@bar.com>',
+        x_contributors => [
             'Dagfinn Ilmari Mannsåker <ilmari@example.org>',
-        ),
+            'Foo Bar <foo@bar.com>',
+        ],
         x_Dist_Zilla => superhashof({
             plugins => supersetof(
                 {
@@ -80,6 +80,7 @@ cmp_deeply(
                         'Dist::Zilla::Plugin::Git::Contributors' => {
                             include_authors => 0,
                             include_releaser => 1,
+                            order_by => 'name',
                         },
                     },
                     name => 'Git::Contributors',

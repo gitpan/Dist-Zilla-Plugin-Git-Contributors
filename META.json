@@ -37,14 +37,14 @@
       },
       "develop" : {
          "recommends" : {
-            "Dist::Zilla::PluginBundle::Author::ETHER" : "0.068"
+            "Dist::Zilla::PluginBundle::Author::ETHER" : "0.069"
          },
          "requires" : {
             "Dist::Zilla" : "5",
             "Dist::Zilla::Plugin::Bootstrap::lib" : "0",
             "Dist::Zilla::Plugin::Git::CheckFor::CorrectBranch" : "0.004",
             "Dist::Zilla::Plugin::Git::Commit" : "2.020",
-            "Dist::Zilla::Plugin::Git::Contributors" : "0",
+            "Dist::Zilla::Plugin::Git::Contributors" : "0.003",
             "Dist::Zilla::Plugin::Git::GatherDir" : "2.016",
             "Dist::Zilla::Plugin::GitHub::Update" : "0",
             "Dist::Zilla::Plugin::GithubMeta" : "0",
@@ -56,6 +56,7 @@
             "Dist::Zilla::Plugin::NextRelease" : "4.300018",
             "Dist::Zilla::Plugin::PkgVersion" : "5.010",
             "Dist::Zilla::Plugin::Prereqs" : "0",
+            "Dist::Zilla::Plugin::ReadmeAnyFromPod" : "0.142180",
             "Dist::Zilla::Plugin::RunExtraTests" : "0.019",
             "Dist::Zilla::Plugin::Test::CPAN::Changes" : "0.008",
             "Dist::Zilla::Plugin::Test::CleanNamespaces" : "0",
@@ -80,11 +81,13 @@
       },
       "runtime" : {
          "requires" : {
+            "Data::Dumper" : "0",
             "Dist::Zilla::Plugin::MetaResources" : "4.300039",
             "Dist::Zilla::Role::MetaProvider" : "0",
             "Git::Wrapper" : "0",
             "List::Util" : "1.33",
             "Moose" : "0",
+            "Moose::Util::TypeConstraints" : "0",
             "Path::Tiny" : "0",
             "Safe::Isa" : "0",
             "Try::Tiny" : "0",
@@ -118,7 +121,7 @@
    "provides" : {
       "Dist::Zilla::Plugin::Git::Contributors" : {
          "file" : "lib/Dist/Zilla/Plugin/Git/Contributors.pm",
-         "version" : "0.003"
+         "version" : "0.004"
       }
    },
    "release_status" : "stable",
@@ -136,7 +139,7 @@
       "x_IRC" : "irc://irc.perl.org/#distzilla",
       "x_MailingList" : "http://dzil.org/#mailing-list"
    },
-   "version" : "0.003",
+   "version" : "0.004",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.021002"
@@ -147,8 +150,8 @@
             "config" : {
                "Dist::Zilla::Role::Bootstrap" : {
                   "distname" : "Dist-Zilla-Plugin-Git-Contributors",
-                  "fallback" : "1",
-                  "try_built" : null,
+                  "fallback" : "0",
+                  "try_built" : "1",
                   "try_built_method" : "mtime"
                }
             },
@@ -160,11 +163,12 @@
             "config" : {
                "Dist::Zilla::Plugin::Git::Contributors" : {
                   "include_authors" : "0",
-                  "include_releaser" : "1"
+                  "include_releaser" : "1",
+                  "order_by" : "name"
                }
             },
             "name" : "Git::Contributors",
-            "version" : null
+            "version" : "0.004"
          },
          {
             "class" : "Dist::Zilla::Plugin::Git::NextVersion",
@@ -287,18 +291,24 @@
             "class" : "Dist::Zilla::Plugin::Test::Compile",
             "config" : {
                "Dist::Zilla::Plugin::Test::Compile" : {
+                  "bail_out_on_fail" : "1",
+                  "fail_on_warning" : "author",
+                  "fake_home" : "0",
                   "filename" : "xt/author/00-compile.t",
                   "module_finder" : [
                      ":InstallModules"
                   ],
+                  "needs_display" : "0",
+                  "phase" : "develop",
                   "script_finder" : [
                      ":ExecFiles",
                      "@Author::ETHER/Examples"
-                  ]
+                  ],
+                  "skips" : []
                }
             },
             "name" : "@Author::ETHER/Test::Compile",
-            "version" : "2.044"
+            "version" : "2.045"
          },
          {
             "class" : "Dist::Zilla::Plugin::Test::NoTabs",
@@ -559,12 +569,13 @@
             "class" : "Dist::Zilla::Plugin::Git::Contributors",
             "config" : {
                "Dist::Zilla::Plugin::Git::Contributors" : {
-                  "include_authors" : "0",
-                  "include_releaser" : "1"
+                  "include_authors" : "1",
+                  "include_releaser" : "0",
+                  "order_by" : "name"
                }
             },
             "name" : "@Author::ETHER/Git::Contributors",
-            "version" : null
+            "version" : "0.004"
          },
          {
             "class" : "Dist::Zilla::Plugin::AutoPrereqs",
@@ -788,7 +799,7 @@
                "Dist::Zilla::Plugin::Git::Tag" : {
                   "branch" : null,
                   "signed" : 0,
-                  "tag" : "v0.003",
+                  "tag" : "v0.004",
                   "tag_format" : "v%v%t",
                   "tag_message" : "v%v%t",
                   "time_zone" : "local"

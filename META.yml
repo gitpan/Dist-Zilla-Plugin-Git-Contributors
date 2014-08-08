@@ -41,13 +41,15 @@ no_index:
 provides:
   Dist::Zilla::Plugin::Git::Contributors:
     file: lib/Dist/Zilla/Plugin/Git/Contributors.pm
-    version: '0.003'
+    version: '0.004'
 requires:
+  Data::Dumper: '0'
   Dist::Zilla::Plugin::MetaResources: '4.300039'
   Dist::Zilla::Role::MetaProvider: '0'
   Git::Wrapper: '0'
   List::Util: '1.33'
   Moose: '0'
+  Moose::Util::TypeConstraints: '0'
   Path::Tiny: '0'
   Safe::Isa: '0'
   Try::Tiny: '0'
@@ -61,7 +63,7 @@ resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=Dist-Zilla-Plugin-Git-Contributors
   homepage: https://github.com/karenetheridge/Dist-Zilla-Plugin-Git-Contributors
   repository: https://github.com/karenetheridge/Dist-Zilla-Plugin-Git-Contributors.git
-version: '0.003'
+version: '0.004'
 x_Dist_Zilla:
   perl:
     version: '5.021002'
@@ -71,8 +73,8 @@ x_Dist_Zilla:
       config:
         Dist::Zilla::Role::Bootstrap:
           distname: Dist-Zilla-Plugin-Git-Contributors
-          fallback: '1'
-          try_built: ~
+          fallback: '0'
+          try_built: '1'
           try_built_method: mtime
       name: Bootstrap::lib
       version: '1.000004'
@@ -82,8 +84,9 @@ x_Dist_Zilla:
         Dist::Zilla::Plugin::Git::Contributors:
           include_authors: '0'
           include_releaser: '1'
+          order_by: name
       name: Git::Contributors
-      version: ~
+      version: '0.004'
     -
       class: Dist::Zilla::Plugin::Git::NextVersion
       config:
@@ -178,14 +181,20 @@ x_Dist_Zilla:
       class: Dist::Zilla::Plugin::Test::Compile
       config:
         Dist::Zilla::Plugin::Test::Compile:
+          bail_out_on_fail: '1'
+          fail_on_warning: author
+          fake_home: '0'
           filename: xt/author/00-compile.t
           module_finder:
             - ':InstallModules'
+          needs_display: '0'
+          phase: develop
           script_finder:
             - ':ExecFiles'
             - '@Author::ETHER/Examples'
+          skips: []
       name: '@Author::ETHER/Test::Compile'
-      version: '2.044'
+      version: '2.045'
     -
       class: Dist::Zilla::Plugin::Test::NoTabs
       config:
@@ -389,10 +398,11 @@ x_Dist_Zilla:
       class: Dist::Zilla::Plugin::Git::Contributors
       config:
         Dist::Zilla::Plugin::Git::Contributors:
-          include_authors: '0'
-          include_releaser: '1'
+          include_authors: '1'
+          include_releaser: '0'
+          order_by: name
       name: '@Author::ETHER/Git::Contributors'
-      version: ~
+      version: '0.004'
     -
       class: Dist::Zilla::Plugin::AutoPrereqs
       name: '@Author::ETHER/AutoPrereqs'
@@ -557,7 +567,7 @@ x_Dist_Zilla:
         Dist::Zilla::Plugin::Git::Tag:
           branch: ~
           signed: 0
-          tag: v0.003
+          tag: v0.004
           tag_format: v%v%t
           tag_message: v%v%t
           time_zone: local
