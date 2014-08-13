@@ -41,7 +41,7 @@ no_index:
 provides:
   Dist::Zilla::Plugin::Git::Contributors:
     file: lib/Dist/Zilla/Plugin/Git/Contributors.pm
-    version: '0.004'
+    version: '0.005'
 requires:
   Data::Dumper: '0'
   Dist::Zilla::Plugin::MetaResources: '4.300039'
@@ -53,6 +53,7 @@ requires:
   Path::Tiny: '0'
   Safe::Isa: '0'
   Try::Tiny: '0'
+  Unicode::Collate: '0'
   namespace::autoclean: '0'
   perl: '5.008'
   strict: '0'
@@ -63,7 +64,7 @@ resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=Dist-Zilla-Plugin-Git-Contributors
   homepage: https://github.com/karenetheridge/Dist-Zilla-Plugin-Git-Contributors
   repository: https://github.com/karenetheridge/Dist-Zilla-Plugin-Git-Contributors.git
-version: '0.004'
+version: '0.005'
 x_Dist_Zilla:
   perl:
     version: '5.021002'
@@ -86,7 +87,7 @@ x_Dist_Zilla:
           include_releaser: '1'
           order_by: name
       name: Git::Contributors
-      version: '0.004'
+      version: '0.004002'
     -
       class: Dist::Zilla::Plugin::Git::NextVersion
       config:
@@ -402,7 +403,7 @@ x_Dist_Zilla:
           include_releaser: '0'
           order_by: name
       name: '@Author::ETHER/Git::Contributors'
-      version: '0.004'
+      version: '0.004002'
     -
       class: Dist::Zilla::Plugin::AutoPrereqs
       name: '@Author::ETHER/AutoPrereqs'
@@ -567,7 +568,7 @@ x_Dist_Zilla:
         Dist::Zilla::Plugin::Git::Tag:
           branch: ~
           signed: 0
-          tag: v0.004
+          tag: v0.005
           tag_format: v%v%t
           tag_message: v%v%t
           time_zone: local

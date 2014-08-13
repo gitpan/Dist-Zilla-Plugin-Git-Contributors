@@ -4,8 +4,8 @@ package Dist::Zilla::Plugin::Git::Contributors;
 BEGIN {
   $Dist::Zilla::Plugin::Git::Contributors::AUTHORITY = 'cpan:ETHER';
 }
-# git description: v0.003-9-gfd0c9cc
-$Dist::Zilla::Plugin::Git::Contributors::VERSION = '0.004';
+# git description: v0.004-10-g2279f27
+$Dist::Zilla::Plugin::Git::Contributors::VERSION = '0.005';
 # ABSTRACT: Add contributor names from git to your distribution
 # KEYWORDS: plugin distribution metadata git contributors authors commits
 # vim: set ts=8 sw=4 tw=78 et :
@@ -20,6 +20,7 @@ use Safe::Isa;
 use Path::Tiny;
 use Data::Dumper;
 use Moose::Util::TypeConstraints 'enum';
+use Unicode::Collate;
 use namespace::autoclean;
 
 has include_authors => (
@@ -66,13 +67,12 @@ sub _contributors
 {
     my $self = shift;
 
-    # figure out if we're in a git repo or not
     my $in_repo;
     try {
         $in_repo = $self->_git(RUN => 'status');
     }
     catch {
-        $self->log($_->error) if $_->$_isa('Git::Wrapper::Exception');
+        $self->log($_->$_isa('Git::Wrapper::Exception') ? $_->error : $_) ;
     };
 
     return [] if not $in_repo;
@@ -84,6 +84,8 @@ sub _contributors
 
     $self->log_debug([ 'extracted contributors from git: %s',
         sub { Data::Dumper->new([ \@contributors ])->Indent(2)->Terse(1)->Dump } ]);
+
+    @contributors = Unicode::Collate->new(level => 1)->sort(@contributors) if $self->order_by eq 'name';
 
     if (not $self->include_authors)
     {
@@ -155,7 +157,7 @@ Dist::Zilla::Plugin::Git::Contributors - Add contributor names from git to your 
 
 =head1 VERSION
 
-version 0.004
+version 0.005
 
 =head1 SYNOPSIS
 

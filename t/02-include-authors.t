@@ -1,7 +1,6 @@
 use strict;
 use warnings FATAL => 'all';
 
-use utf8;
 use Test::More;
 use if $ENV{AUTHOR_TESTING}, 'Test::Warnings';
 use Test::DZil;
@@ -23,7 +22,7 @@ my $tzil = Builder->from_config(
                     version  => '0.001',
                     author   => [
                         'Anon Y. Moose <anon@null.com>',
-                        '김도형 - Keedi Kim <keedi@example.org>',
+                        'Anne O\'Thor <author@example.com>',
                     ],
                     license  => 'Perl_5',
                     copyright_holder => 'E. Xavier Ample',
@@ -43,7 +42,7 @@ my $git = git_wrapper($root);
 my $changes = $root->child('Changes');
 $changes->spew("Release history for my dist\n\n");
 $git->add('Changes');
-$git->commit({ message => 'first commit', author => 'Dagfinn Ilmari Mannsåker <ilmari@example.org>' });
+$git->commit({ message => 'first commit', author => 'Hey Jude <jude@example.org>' });
 
 $changes->append("- a changelog entry\n");
 $git->add('Changes');
@@ -51,7 +50,7 @@ $git->commit({ message => 'second commit', author => 'Anon Y. Moose <anon@null.c
 
 $changes->append("- another changelog entry\n");
 $git->add('Changes');
-$git->commit({ message => 'third commit', author => '김도형 - Keedi Kim <keedi@example.org>' });
+$git->commit({ message => 'third commit', author => 'Anne O\'Thor <author@example.com>' });
 
 $tzil->chrome->logger->set_debug(1);
 
@@ -59,15 +58,15 @@ is(
     exception { $tzil->build },
     undef,
     'build proceeds normally',
-) or diag 'saw log messages: ', explain $tzil->log_messages;
+);
 
 cmp_deeply(
     $tzil->distmeta,
     superhashof({
         x_contributors => [
+            'Anne O\'Thor <author@example.com>',
             'Anon Y. Moose <anon@null.com>',
-            'Dagfinn Ilmari Mannsåker <ilmari@example.org>',
-            '김도형 - Keedi Kim <keedi@example.org>',
+            'Hey Jude <jude@example.org>',
         ],
         x_Dist_Zilla => superhashof({
             plugins => supersetof(
@@ -87,7 +86,9 @@ cmp_deeply(
         }),
     }),
     'contributor names are extracted, with authors not stripped',
-)
-or diag 'got distmeta: ', explain $tzil->distmeta;
+) or diag 'got distmeta: ', explain $tzil->distmeta;
+
+diag 'got log messages: ', explain $tzil->log_messages
+    if not Test::Builder->new->is_passing;
 
 done_testing;

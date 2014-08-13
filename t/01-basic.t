@@ -1,7 +1,6 @@
 use strict;
 use warnings FATAL => 'all';
 
-use utf8;
 use Test::More;
 use if $ENV{AUTHOR_TESTING}, 'Test::Warnings';
 use Test::DZil;
@@ -11,10 +10,6 @@ use Path::Tiny;
 
 use lib 't/lib';
 use GitSetup;
-
-binmode $_, ':utf8' foreach map { Test::Builder->new->$_ } qw(output failure_output todo_output);
-binmode STDOUT, ':utf8';
-binmode STDERR, ':utf8';
 
 my $tzil = Builder->from_config(
     { dist_root => 't/does-not-exist' },
@@ -27,7 +22,7 @@ my $tzil = Builder->from_config(
                     version  => '0.001',
                     author   => [
                         'Anon Y. Moose <anon@null.com>',
-                        '김도형 - Keedi Kim <keedi@example.org>',
+                        'Anne O\'Thor <author@example.com>',
                     ],
                     license  => 'Perl_5',
                     copyright_holder => 'E. Xavier Ample',
@@ -47,7 +42,7 @@ my $git = git_wrapper($root);
 my $changes = $root->child('Changes');
 $changes->spew("Release history for my dist\n\n");
 $git->add('Changes');
-$git->commit({ message => 'first commit', author => 'Dagfinn Ilmari Mannsåker <ilmari@example.org>' });
+$git->commit({ message => 'first commit', author => 'Hey Jude <jude@example.org>' });
 
 $changes->append("- a changelog entry\n");
 $git->add('Changes');
@@ -63,14 +58,14 @@ is(
     exception { $tzil->build },
     undef,
     'build proceeds normally',
-) or diag 'saw log messages: ', explain $tzil->log_messages;
+);
 
 cmp_deeply(
     $tzil->distmeta,
     superhashof({
         x_contributors => [
-            'Dagfinn Ilmari Mannsåker <ilmari@example.org>',
             'Foo Bar <foo@bar.com>',
+            'Hey Jude <jude@example.org>',
         ],
         x_Dist_Zilla => superhashof({
             plugins => supersetof(
@@ -89,8 +84,10 @@ cmp_deeply(
             ),
         }),
     }),
-    'contributor names are extracted, with authors not stripped',
-)
-or diag 'got distmeta: ', explain $tzil->distmeta;
+    'contributor names are extracted, with authors not included',
+) or diag 'got distmeta: ', explain $tzil->distmeta;
+
+diag 'got log messages: ', explain $tzil->log_messages
+    if not Test::Builder->new->is_passing;
 
 done_testing;

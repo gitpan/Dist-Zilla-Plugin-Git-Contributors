@@ -61,6 +61,7 @@ do { my $x = {
                                       'Path::Tiny' => '0',
                                       'Safe::Isa' => '0',
                                       'Try::Tiny' => '0',
+                                      'Unicode::Collate' => '0',
                                       'namespace::autoclean' => '0',
                                       'perl' => '5.008',
                                       'strict' => '0',

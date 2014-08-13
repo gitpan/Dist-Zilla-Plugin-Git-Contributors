@@ -18,6 +18,7 @@ my @files = (
     't/06-include-releaser.t',
     't/07-author-is-releaser.t',
     't/08-order-by.t',
+    't/09-unicode.t',
     't/lib/GitSetup.pm',
     'xt/author/00-compile.t',
     'xt/author/pod-spell.t',

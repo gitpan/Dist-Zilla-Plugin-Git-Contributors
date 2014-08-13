@@ -89,6 +89,7 @@ my %WriteMakefileArgs = (
     "Path::Tiny" => 0,
     "Safe::Isa" => 0,
     "Try::Tiny" => 0,
+    "Unicode::Collate" => 0,
     "namespace::autoclean" => 0,
     "strict" => 0,
     "warnings" => 0
@@ -108,7 +109,7 @@ my %WriteMakefileArgs = (
     "parent" => 0,
     "utf8" => 0
   },
-  "VERSION" => "0.004",
+  "VERSION" => "0.005",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -135,6 +136,7 @@ my %FallbackPrereqs = (
   "Test::More" => 0,
   "Test::Requires" => 0,
   "Try::Tiny" => 0,
+  "Unicode::Collate" => 0,
   "if" => 0,
   "lib" => 0,
   "namespace::autoclean" => 0,
