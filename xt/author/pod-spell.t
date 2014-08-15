@@ -13,6 +13,9 @@ __DATA__
 Karen
 Etheridge
 ether
+Kent
+Fredric
+kentnl
 lib
 Dist
 Zilla

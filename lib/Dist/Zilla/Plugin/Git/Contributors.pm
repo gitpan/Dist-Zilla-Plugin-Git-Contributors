@@ -4,8 +4,8 @@ package Dist::Zilla::Plugin::Git::Contributors;
 BEGIN {
   $Dist::Zilla::Plugin::Git::Contributors::AUTHORITY = 'cpan:ETHER';
 }
-# git description: v0.004-10-g2279f27
-$Dist::Zilla::Plugin::Git::Contributors::VERSION = '0.005';
+# git description: v0.005-8-g8f658d9
+$Dist::Zilla::Plugin::Git::Contributors::VERSION = '0.006';
 # ABSTRACT: Add contributor names from git to your distribution
 # KEYWORDS: plugin distribution metadata git contributors authors commits
 # vim: set ts=8 sw=4 tw=78 et :
@@ -14,13 +14,13 @@ use Moose;
 with 'Dist::Zilla::Role::MetaProvider';
 
 use List::Util 1.33 'none';
-use Git::Wrapper;
+use Git::Wrapper 0.035;
 use Try::Tiny;
 use Safe::Isa;
 use Path::Tiny;
 use Data::Dumper;
 use Moose::Util::TypeConstraints 'enum';
-use Unicode::Collate;
+use Unicode::Collate 0.53;
 use namespace::autoclean;
 
 has include_authors => (
@@ -96,9 +96,8 @@ sub _contributors
         } @contributors;
     }
 
-    if (not $self->include_releaser)
+    if (not $self->include_releaser and my $releaser = $self->_releaser)
     {
-        my $releaser = $self->_releaser;
         @contributors = grep { $_ ne $releaser } @contributors;
     }
 
@@ -109,9 +108,11 @@ sub _releaser
 {
     my $self = shift;
 
-    my ($username) = $self->_git(config => 'user.name');
-    my ($email) = $self->_git(config => 'user.email');
-
+    my ($username, $email);
+    try {
+        ($username) = $self->_git(config => 'user.name');
+        ($email)    = $self->_git(config => 'user.email');
+    };
     return if not $username or not $email;
     $username . ' <' . $email . '>';
 }
@@ -157,7 +158,7 @@ Dist::Zilla::Plugin::Git::Contributors - Add contributor names from git to your 
 
 =head1 VERSION
 
-version 0.005
+version 0.006
 
 =head1 SYNOPSIS
 

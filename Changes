@@ -1,5 +1,13 @@
 Revision history for Dist-Zilla-Plugin-Git-Contributors
 
+0.006     2014-08-15 01:44:00Z
+          - increase the minimum required version of Unicode::Collate
+          - increase the minimum required version of Git::Wrapper
+          - avoid doubly-encoded committer strings on older perls by avoiding
+            encoding the string before we send it to IPC::Open3
+          - make sure not to crash doing "dzil build" when a user has no
+            user.name and include_releaser = 0 (Kent Fredric, #1)
+
 0.005     2014-08-13 00:46:11Z
           - basic tests are now ascii-only; unicode tests are marked as TODO
             on MSWin32 for now (see (github) genehack/Git-Wrapper#52 for the
