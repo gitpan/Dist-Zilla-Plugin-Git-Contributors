@@ -76,6 +76,7 @@ cmp_deeply(
                             include_authors => 0,
                             include_releaser => 1,
                             order_by => 'name',
+                            paths => [],
                         },
                     },
                     name => 'Git::Contributors',

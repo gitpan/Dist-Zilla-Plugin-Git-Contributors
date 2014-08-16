@@ -20,6 +20,7 @@ my @files = (
     't/08-order-by.t',
     't/09-unicode.t',
     't/10-no-git-user-configured.t',
+    't/11-paths.t',
     't/lib/GitSetup.pm',
     'xt/author/00-compile.t',
     'xt/author/pod-spell.t',

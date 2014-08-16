@@ -20,13 +20,16 @@ my $tzil = Builder->from_config(
                     name     => 'DZT-Sample',
                     abstract => 'Sample DZ Dist',
                     version  => '0.001',
-                    author   => 'Anne O\'Thor <author@example.com>',
+                    author   => [
+                        'Anon Y. Moose <anon@null.com>',
+                        'Anne O\'Thor <author@example.com>',
+                    ],
                     license  => 'Perl_5',
-                    copyright_holder => 'Anne O\'Thor',
+                    copyright_holder => 'E. Xavier Ample',
                 },
                 [ GatherDir => ],
                 [ MetaConfig => ],
-                [ 'Git::Contributors' => { include_releaser => 0 } ],
+                [ 'Git::Contributors' => { paths => [ 't', 'Changes' ] } ],
             ),
             path(qw(source lib Foo.pm)) => "package Foo;\n1;\n",
         },
@@ -36,39 +39,37 @@ my $tzil = Builder->from_config(
 my $root = path($tzil->tempdir)->child('source');
 my $git = git_wrapper($root);
 
-my $releaser = 'Test User <test@example.com>';
-
 my $changes = $root->child('Changes');
 $changes->spew("Release history for my dist\n\n");
 $git->add('Changes');
-$git->commit({ message => 'first commit', author => $tzil->authors->[0] });
+$git->commit({ message => 'first commit', author => 'Hey Jude <jude@example.org>' });
 
-$changes->append("- a changelog entry\n");
-$git->add('Changes');
-$git->commit({ message => 'second commit', author => $releaser });
+my $module = $root->child('lib', 'Foo.pm');
+$module->parent->mkpath;
+$module->append("'ohhai'\n");
+$git->add($module->stringify);
+$git->commit({ message => 'second commit', author => 'Anon Y. Moose <anon@null.com>' });
 
-$changes->append("- a changelog entry\n");
-$git->add('Changes');
-$git->commit({ message => 'third commit', author => 'Anon Y. Moose <anon@null.com>' });
+my $test = $root->child('t', 'foo.t');
+$test->parent->mkpath;
+$test->spew("use Test::More\npass('ohhai');\n");
+$git->add($test->stringify);
+$git->commit({ message => 'third commit', author => 'Foo Bar <foo@bar.com>' });
 
 $tzil->chrome->logger->set_debug(1);
+
 is(
     exception { $tzil->build },
     undef,
     'build proceeds normally',
 );
 
-is(
-    $tzil->plugin_named('Git::Contributors')->_releaser,
-    $releaser,
-    'properly determined the name+email of the current user',
-);
-
 cmp_deeply(
     $tzil->distmeta,
     superhashof({
         x_contributors => [
-            'Anon Y. Moose <anon@null.com>',
+            'Foo Bar <foo@bar.com>',
+            'Hey Jude <jude@example.org>',
         ],
         x_Dist_Zilla => superhashof({
             plugins => supersetof(
@@ -76,7 +77,7 @@ cmp_deeply(
                     class => 'Dist::Zilla::Plugin::Git::Contributors',
                     config => {
                         'Dist::Zilla::Plugin::Git::Contributors' => superhashof({
-                            include_releaser => 0,
+                            paths => [ 't', 'Changes' ],
                         }),
                     },
                     name => 'Git::Contributors',
@@ -85,7 +86,7 @@ cmp_deeply(
             ),
         }),
     }),
-    'releaser not included in contributor list (nor author, by default)',
+    'contributor names are extracted, from only the specified path',
 ) or diag 'got distmeta: ', explain $tzil->distmeta;
 
 diag 'got log messages: ', explain $tzil->log_messages

@@ -64,7 +64,7 @@ EOW
         "Karen Etheridge <ether\@cpan.org>"
       ],
       "dist_name" => "Dist-Zilla-Plugin-Git-Contributors",
-      "dist_version" => "0.006",
+      "dist_version" => "0.007",
       "license" => "perl",
       "module_name" => "Dist::Zilla::Plugin::Git::Contributors",
       "recommends" => {},

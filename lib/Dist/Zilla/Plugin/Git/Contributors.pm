@@ -4,8 +4,8 @@ package Dist::Zilla::Plugin::Git::Contributors;
 BEGIN {
   $Dist::Zilla::Plugin::Git::Contributors::AUTHORITY = 'cpan:ETHER';
 }
-# git description: v0.005-8-g8f658d9
-$Dist::Zilla::Plugin::Git::Contributors::VERSION = '0.006';
+# git description: v0.006-2-g52defb0
+$Dist::Zilla::Plugin::Git::Contributors::VERSION = '0.007';
 # ABSTRACT: Add contributor names from git to your distribution
 # KEYWORDS: plugin distribution metadata git contributors authors commits
 # vim: set ts=8 sw=4 tw=78 et :
@@ -23,6 +23,9 @@ use Moose::Util::TypeConstraints 'enum';
 use Unicode::Collate 0.53;
 use namespace::autoclean;
 
+sub mvp_multivalue_args { qw(paths) }
+sub mvp_aliases { return { path => 'paths' } }
+
 has include_authors => (
     is => 'ro', isa => 'Bool',
     default => 0,
@@ -38,6 +41,14 @@ has order_by => (
     default => 'name',
 );
 
+has paths => (
+    isa => 'ArrayRef[Str]',
+    lazy => 1,
+    default => sub { [] },
+    traits => ['Array'],
+    handles => { paths => 'elements' },
+);
+
 around dump_config => sub
 {
     my ($orig, $self) = @_;
@@ -47,6 +58,7 @@ around dump_config => sub
         include_authors => $self->include_authors,
         include_releaser  => $self->include_releaser,
         order_by => $self->order_by,
+        paths => [ $self->paths ],
     };
 
     return $config;
@@ -77,8 +89,13 @@ sub _contributors
 
     return [] if not $in_repo;
 
-    my @data = $self->_git(shortlog => 'HEAD',
-        { email => 1, summary => 1, ($self->order_by eq 'commits' ? (numbered => 1) : ()) });
+    my @paths = $self->paths;
+    unshift @paths, '--' if @paths;
+
+    my @data = $self->_git(shortlog =>
+        { email => 1, summary => 1, ($self->order_by eq 'commits' ? (numbered => 1) : ()) },
+        'HEAD', @paths,
+    );
 
     my @contributors = map { utf8::decode($_); m/^\s*\d+\s*(.*)$/g; } @data;
 
@@ -158,7 +175,7 @@ Dist::Zilla::Plugin::Git::Contributors - Add contributor names from git to your 
 
 =head1 VERSION
 
-version 0.006
+version 0.007
 
 =head1 SYNOPSIS
 
@@ -196,6 +213,13 @@ of the) distribution author(s) and C<include_authors = 1>.
 When C<order_by = name>, contributors are sorted alphabetically
 (ascending); when C<order_by = commits>, contributors are sorted by number of
 commits made to the repository (descending). Th default value is C<name>.
+
+=head2 C<path>
+
+Indicates a path, relative to the repository root, to search for commits in.
+Technically: "Consider only commits that are enough to explain how the files that match the specified paths came to be."
+Defaults to the repository root. Can be used more than once.
+I<You should almost certainly not need this.>
 
 =for stopwords canonicalizing
 
@@ -263,7 +287,7 @@ L<Module::Install::Contributors>
 
 =back
 
-=for Pod::Coverage metadata
+=for Pod::Coverage mvp_multivalue_args mvp_aliases metadata
 
 =head1 AUTHOR
 

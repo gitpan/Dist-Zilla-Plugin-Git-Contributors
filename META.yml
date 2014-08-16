@@ -41,7 +41,7 @@ no_index:
 provides:
   Dist::Zilla::Plugin::Git::Contributors:
     file: lib/Dist/Zilla/Plugin/Git/Contributors.pm
-    version: '0.006'
+    version: '0.007'
 requires:
   Data::Dumper: '0'
   Dist::Zilla::Plugin::MetaResources: '4.300039'
@@ -64,7 +64,7 @@ resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=Dist-Zilla-Plugin-Git-Contributors
   homepage: https://github.com/karenetheridge/Dist-Zilla-Plugin-Git-Contributors
   repository: https://github.com/karenetheridge/Dist-Zilla-Plugin-Git-Contributors.git
-version: '0.006'
+version: '0.007'
 x_Dist_Zilla:
   perl:
     version: '5.021002'
@@ -78,7 +78,7 @@ x_Dist_Zilla:
           try_built: '1'
           try_built_method: mtime
       name: Bootstrap::lib
-      version: '1.000004'
+      version: '1.000005'
     -
       class: Dist::Zilla::Plugin::Git::Contributors
       config:
@@ -86,8 +86,9 @@ x_Dist_Zilla:
           include_authors: '0'
           include_releaser: '1'
           order_by: name
+          paths: []
       name: Git::Contributors
-      version: '0.006'
+      version: '0.007'
     -
       class: Dist::Zilla::Plugin::Git::NextVersion
       config:
@@ -246,8 +247,11 @@ x_Dist_Zilla:
       version: '1.001'
     -
       class: Dist::Zilla::Plugin::Test::Kwalitee
+      config:
+        Dist::Zilla::Plugin::Test::Kwalitee:
+          skiptest: []
       name: '@Author::ETHER/Test::Kwalitee'
-      version: '2.07'
+      version: '2.08'
     -
       class: Dist::Zilla::Plugin::MojibakeTests
       name: '@Author::ETHER/MojibakeTests'
@@ -386,15 +390,25 @@ x_Dist_Zilla:
           inherit_version: '1'
           meta_noindex: '1'
       name: '@Author::ETHER/MetaProvides::Package'
-      version: '2.000003'
+      version: '2.000004'
     -
       class: Dist::Zilla::Plugin::MetaConfig
       name: '@Author::ETHER/MetaConfig'
       version: '5.020'
     -
       class: Dist::Zilla::Plugin::Keywords
+      config:
+        Dist::Zilla::Plugin::Keywords:
+          keywords:
+            - plugin
+            - distribution
+            - metadata
+            - git
+            - contributors
+            - authors
+            - commits
       name: '@Author::ETHER/Keywords'
-      version: '0.005'
+      version: '0.006'
     -
       class: Dist::Zilla::Plugin::Git::Contributors
       config:
@@ -402,8 +416,9 @@ x_Dist_Zilla:
           include_authors: '0'
           include_releaser: '1'
           order_by: commits
+          paths: []
       name: '@Author::ETHER/Git::Contributors'
-      version: '0.006'
+      version: '0.007'
     -
       class: Dist::Zilla::Plugin::AutoPrereqs
       name: '@Author::ETHER/AutoPrereqs'
@@ -430,7 +445,7 @@ x_Dist_Zilla:
         Dist::Zilla::Role::TestRunner:
           default_jobs: 9
       name: '@Author::ETHER/MakeMaker::Fallback'
-      version: '0.012'
+      version: '0.013'
     -
       class: Dist::Zilla::Plugin::ModuleBuildTiny::Fallback
       config:
@@ -464,7 +479,7 @@ x_Dist_Zilla:
           run:
             - "bash -c \"if [[ `dirname %d` != .build ]]; then test -e .ackrc && grep -q -- '--ignore-dir=%d' .ackrc || echo '--ignore-dir=%d' >> .ackrc; fi; if [[ %d =~ ^%n-[.[:xdigit:]]+$ ]]; then rm -f .latest; ln -s %d .latest; fi\""
       name: '@Author::ETHER/Run::AfterBuild'
-      version: '0.023'
+      version: '0.024'
     -
       class: Dist::Zilla::Plugin::CheckStrictVersion
       name: '@Author::ETHER/CheckStrictVersion'
@@ -532,7 +547,7 @@ x_Dist_Zilla:
     -
       class: Dist::Zilla::Plugin::CopyFilesFromRelease
       name: '@Author::ETHER/CopyFilesFromRelease'
-      version: '0.001'
+      version: '0.002'
     -
       class: Dist::Zilla::Plugin::Run::AfterRelease
       config:
@@ -540,7 +555,7 @@ x_Dist_Zilla:
           run:
             - 'rm -f README.md'
       name: '@Author::ETHER/remove old READMEs'
-      version: '0.023'
+      version: '0.024'
     -
       class: Dist::Zilla::Plugin::Git::Commit
       config:
@@ -568,7 +583,7 @@ x_Dist_Zilla:
         Dist::Zilla::Plugin::Git::Tag:
           branch: ~
           signed: 0
-          tag: v0.006
+          tag: v0.007
           tag_format: v%v%t
           tag_message: v%v%t
           time_zone: local
@@ -597,7 +612,7 @@ x_Dist_Zilla:
         Dist::Zilla::Plugin::Run::Role::Runner:
           run: REDACTED
       name: '@Author::ETHER/install release'
-      version: '0.023'
+      version: '0.024'
     -
       class: Dist::Zilla::Plugin::ConfirmRelease
       name: '@Author::ETHER/ConfirmRelease'
@@ -632,8 +647,12 @@ x_Dist_Zilla:
       version: '5.020'
     -
       class: Dist::Zilla::Plugin::Test::CleanNamespaces
+      config:
+        Dist::Zilla::Plugin::Test::CleanNamespaces:
+          filename: xt/release/clean-namespaces.t
+          skips: []
       name: Test::CleanNamespaces
-      version: '0.004'
+      version: '0.005'
     -
       class: Dist::Zilla::Plugin::FinderCode
       name: ':InstallModules'

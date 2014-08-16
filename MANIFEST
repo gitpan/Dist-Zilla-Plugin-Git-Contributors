@@ -23,6 +23,7 @@ t/07-author-is-releaser.t
 t/08-order-by.t
 t/09-unicode.t
 t/10-no-git-user-configured.t
+t/11-paths.t
 t/lib/GitSetup.pm
 weaver.ini
 xt/author/00-compile.t
