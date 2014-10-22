@@ -11,18 +11,29 @@ use Path::Tiny;
 use lib 't/lib';
 use GitSetup;
 
-foreach my $order_by (qw(name commits))
 {
     my $tempdir = no_git_tempdir();
     my $tzil = Builder->from_config(
         { dist_root => 't/does-not-exist' },
         {
             add_files => {
-                path(qw(source dist.ini)) => simple_ini(
+                path(qw(source dist.ini)) => dist_ini(
+                    {
+                        name     => 'DZT-Sample',
+                        abstract => 'Sample DZ Dist',
+                        version  => '0.001',
+                        author   => [
+                            'Anne O\'Thor <author@example.com>',
+                        ],
+                        license  => 'Perl_5',
+                        copyright_holder => 'E. Xavier Ample',
+                    },
                     [ GatherDir => ],
-                    [ 'Git::Contributors' => { order_by => $order_by } ],
+                    [ MetaConfig => ],
+                    [ 'Git::Contributors' ],
                 ),
                 path(qw(source lib Foo.pm)) => "package Foo;\n1;\n",
+                path(qw(source .mailmap)) => "Anon Nonny Moose <anonnonny\@moose.org> Anon Y. Moose <anon\@null.com>\n",
             },
             tempdir_root => $tempdir->stringify,
         },
@@ -36,14 +47,6 @@ foreach my $order_by (qw(name commits))
     $git->add('Changes');
     $git->commit({ message => 'first commit', author => 'Anon Y. Moose <anon@null.com>' });
 
-    $changes->append("- a changelog entry\n");
-    $git->add('Changes');
-    $git->commit({ message => 'second commit', author => 'Z. Tinman <ztinman@example.com>' });
-
-    $changes->append("- another changelog entry\n");
-    $git->add('Changes');
-    $git->commit({ message => 'third commit', author => 'Z. Tinman <ztinman@example.com>' });
-
     $tzil->chrome->logger->set_debug(1);
 
     is(
@@ -52,26 +55,23 @@ foreach my $order_by (qw(name commits))
         'build proceeds normally',
     );
 
-    my @contributors = (
-        'Anon Y. Moose <anon@null.com>',
-        'Z. Tinman <ztinman@example.com>',
-    );
-
     cmp_deeply(
         $tzil->distmeta,
         superhashof({
-            x_contributors =>
-                $order_by eq 'name' ? \@contributors
-              : $order_by eq 'commits' ? [ reverse @contributors ]
-              : die 'bad option',
+            x_contributors => [
+                'Anon Nonny Moose <anonnonny@moose.org>',
+            ],
             x_Dist_Zilla => superhashof({
                 plugins => supersetof(
                     {
                         class => 'Dist::Zilla::Plugin::Git::Contributors',
                         config => {
-                            'Dist::Zilla::Plugin::Git::Contributors' => superhashof({
-                                order_by => $order_by,
-                            }),
+                            'Dist::Zilla::Plugin::Git::Contributors' => {
+                                include_authors => 0,
+                                include_releaser => 1,
+                                order_by => 'name',
+                                paths => [],
+                            },
                         },
                         name => 'Git::Contributors',
                         version => ignore,
@@ -79,7 +79,7 @@ foreach my $order_by (qw(name commits))
                 ),
             }),
         }),
-        'contributor names are sorted by ' . $order_by,
+        'contributor names are extracted, with .mailmap entries applied',
     ) or diag 'got distmeta: ', explain $tzil->distmeta;
 
     diag 'got log messages: ', explain $tzil->log_messages

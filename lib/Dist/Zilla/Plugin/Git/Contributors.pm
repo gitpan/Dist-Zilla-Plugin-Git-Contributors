@@ -1,11 +1,8 @@
 use strict;
 use warnings;
 package Dist::Zilla::Plugin::Git::Contributors;
-BEGIN {
-  $Dist::Zilla::Plugin::Git::Contributors::AUTHORITY = 'cpan:ETHER';
-}
-# git description: v0.006-2-g52defb0
-$Dist::Zilla::Plugin::Git::Contributors::VERSION = '0.007';
+# git description: v0.007-10-gf16ab82
+$Dist::Zilla::Plugin::Git::Contributors::VERSION = '0.008';
 # ABSTRACT: Add contributor names from git to your distribution
 # KEYWORDS: plugin distribution metadata git contributors authors commits
 # vim: set ts=8 sw=4 tw=78 et :
@@ -93,7 +90,11 @@ sub _contributors
     unshift @paths, '--' if @paths;
 
     my @data = $self->_git(shortlog =>
-        { email => 1, summary => 1, ($self->order_by eq 'commits' ? (numbered => 1) : ()) },
+        {
+            email => 1,
+            summary => 1,
+            $self->order_by eq 'commits' ? ( numbered => 1 ) : (),
+        },
         'HEAD', @paths,
     );
 
@@ -148,7 +149,7 @@ has __git => (
     is => 'ro',
     isa => 'Git::Wrapper',
     lazy => 1,
-    default => sub { Git::Wrapper->new(path('.')->absolute->stringify) },
+    default => sub { Git::Wrapper->new(path(shift->zilla->root)->absolute->stringify) },
 );
 
 sub _git
@@ -175,7 +176,7 @@ Dist::Zilla::Plugin::Git::Contributors - Add contributor names from git to your 
 
 =head1 VERSION
 
-version 0.007
+version 0.008
 
 =head1 SYNOPSIS
 
@@ -196,23 +197,26 @@ distribution metadata.
 
 =head2 C<include_authors>
 
-When true, authors are added to the list of contributors. When false, authors
+When true, authors (as defined by the preamble section in your F<dist.ini>)
+are added to the list of contributors. When false, authors
 are filtered out of the list of contributors.  Defaults to false.
 
 =head2 C<include_releaser>
-
-This option is B<EXPERIMENTAL> and may be removed!
 
 Defaults to true; set to false to remove the current user (who is doing the
 distribution release) from the contributors list. It is applied after
 C<include_authors>, so you will be removed from the list even if you are (one
 of the) distribution author(s) and C<include_authors = 1>.
 
+You probably don't want this option -- it was added experimentally to change
+how contributors are displayed on L<http://metacpan.org>, but it was decided
+that this should be managed at a different layer than the metadata.
+
 =head2 C<order_by>
 
 When C<order_by = name>, contributors are sorted alphabetically
 (ascending); when C<order_by = commits>, contributors are sorted by number of
-commits made to the repository (descending). Th default value is C<name>.
+commits made to the repository (descending). The default value is C<name>.
 
 =head2 C<path>
 
@@ -226,7 +230,8 @@ I<You should almost certainly not need this.>
 =head1 CANONICALIZING NAMES AND ADDRESSES
 
 If you or a contributor uses multiple names and/or email addresses to make
-commits and would like them mapped to a canonical value, you can do this by
+commits and would like them mapped to a canonical value (e.g. their
+C<cpan.org> address), you can do this by
 adding a F<.mailmap> file to your git repository, with entries formatted as
 described in "MAPPING AUTHORS" in C<git help shortlog>
 (L<https://www.kernel.org/pub/software/scm/git/docs/git-shortlog.html>).
